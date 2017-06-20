@@ -7,7 +7,7 @@ class ConfigFile:
 
     @staticmethod
     def __param_string(param, value):
-        return param+"="+value
+        return param + "=" + value
 
     def __init__(self, file_name=BOOT_CONFIG_PATH):
         self.is_changed = False
@@ -30,7 +30,6 @@ class ConfigFile:
 
         # ...and finally just create an empty line
         if line_num == -1:
-            line_num == len(self.lines)
             self.lines.append("")
 
         target_value = self.__param_string(param, value)+"\n"

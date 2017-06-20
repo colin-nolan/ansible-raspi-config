@@ -8,12 +8,10 @@ import re
 from ansible.module_utils.common import RASPI_CONFIG_BIN, ConfigFile
 
 CPU_INFO_PATH = "/proc/cpuinfo"
-
 CPU_PI2 = "Pi2"
-
 CPU_TYPES = "cpu_types"
-
-CONFIG_OC_REGEXP = re.compile("set_overclock " + CPU_PI2 + " (?P<arm_freq>\d+) (?P<core_freq>\d+) (?P<sdram_freq>\d+) (?P<over_voltage>\d+)")
+CONFIG_OC_REGEXP = re.compile("set_overclock " + CPU_PI2
+                              + " (?P<arm_freq>\d+) (?P<core_freq>\d+) (?P<sdram_freq>\d+) (?P<over_voltage>\d+)")
 
 
 def read_oc_params():
@@ -25,12 +23,9 @@ def read_oc_params():
 def main():
     module = AnsibleModule(argument_spec={
         CPU_TYPES: {"required": True, "type": "dict"}
-    }
-    )
+    })
 
     pi2_cpu = module.params.get(CPU_TYPES)[CPU_PI2]
-
-    is_pi2 = False
 
     with open(CPU_INFO_PATH) as fp:
         is_pi2 = any(x.find(pi2_cpu) > -1 for x in fp.readlines())
@@ -38,10 +33,12 @@ def main():
     if is_pi2:
         oc_config = read_oc_params()
         config_file = ConfigFile()
-        for (param, value) in oc_config.iteritems():
+        for param, value in oc_config.items():
             config_file.set(param, value)
         module.exit_json(changed=config_file.is_changed, msg="Is Pi2, ensured optimum CPU params.")
     else:
-        module.exit_json(changed=False, msg="CPU chipset does not appear to be a Pi2 (but you can still custom-OC it by setting 'raspi_config_other_options!).")
+        module.exit_json(changed=False, msg="CPU chipset does not appear to be a Pi2 (but you can still custom-OC it "
+                                            "by setting 'raspi_config_other_options'!).")
 
-main()
+if __name__ == "__main__":
+    main()

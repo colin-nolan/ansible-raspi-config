@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Ensures the given config value is set.
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 
 from ansible.module_utils.common import ConfigFile
 
@@ -12,8 +12,7 @@ CONFIG_VALS = "config_vals"
 def main():
     module = AnsibleModule(argument_spec={
         CONFIG_VALS: {"required": True, "type": "dict"}
-    }
-    )
+    })
 
     config_vals = module.params.get(CONFIG_VALS)
 
@@ -23,9 +22,9 @@ def main():
     err = ""
 
     # sanitize from auto-typing in YAML
-    config_vals = dict((str(key), str(val)) for (key, val) in config_vals.iteritems())
+    config_vals = dict((str(key), str(val)) for (key, val) in config_vals.items())
 
-    for (key, val) in config_vals.iteritems():
+    for key, val in config_vals.items():
         try:
             modified = config.set(key, val)
             if modified:
